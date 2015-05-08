@@ -19,12 +19,13 @@ var runSequence = require('run-sequence');
 var SRC_DIR = './client/src';
 var BUILD_DIR = './dist';
 
-var SRC_JS = path.join(SRC_DIR, 'js');
+var SRC_JS = SRC_DIR;
+var SRC_CSS = SRC_DIR;
 var SRC_SASS = path.join(SRC_DIR, 'sass');
 var SRC_LESS = path.join(SRC_DIR, 'less');
 var SRC_IMG = path.join(SRC_DIR, 'img');
 var SRC_FONTS = path.join(SRC_DIR, 'fonts');
-var SRC_PARTIALS = path.join(SRC_DIR, 'partials');
+var SRC_PARTIALS = SRC_DIR;
 
 var BROWSERIFY_BUNDLES = [{
     debug: true,
