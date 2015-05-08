@@ -11,6 +11,7 @@ var browserify = require('browserify');
 var browserSync = require('browser-sync').create();
 var watchify = require('watchify');
 var _ = require('lodash');
+var del = require('del');
 var babelify = require('babelify');
 var jshint = require('gulp-jshint');
 var runSequence = require('run-sequence');
@@ -19,12 +20,12 @@ var runSequence = require('run-sequence');
 var SRC_DIR = './client/src';
 var BUILD_DIR = './dist';
 
-var SRC_JS = path.join(SRC_DIR, 'js');
+var SRC_JS = SRC_DIR;
 var SRC_SASS = path.join(SRC_DIR, 'sass');
 var SRC_LESS = path.join(SRC_DIR, 'less');
 var SRC_IMG = path.join(SRC_DIR, 'img');
 var SRC_FONTS = path.join(SRC_DIR, 'fonts');
-var SRC_PARTIALS = path.join(SRC_DIR, 'partials');
+var SRC_PARTIALS = SRC_DIR;
 
 var BROWSERIFY_BUNDLES = [{
     debug: true,
@@ -37,14 +38,22 @@ var BROWSERIFY_BUNDLES = [{
 
 var BROWSERSYNC = {
     server: {
-        baseDir: './client/src'
+        baseDir: './dist'
     }
 };
+
+// Clean up build directory
+gulp.task('clean', function(cb) {
+	del(BUILD_DIR, { force: true }, function(err) {
+		if (err) { cb(err); }
+		cb();
+	});
+});
 
 // Move partials
 gulp.task('partials', function() {
     return gulp.src(SRC_PARTIALS + '/**/*.html')
-        .pipe(gulp.dest(path.join(BUILD_DIR, 'partials')))
+        .pipe(gulp.dest(BUILD_DIR))
         .pipe(gulpif(!production, browserSync.reload({
             stream: true
         })));
@@ -53,7 +62,7 @@ gulp.task('partials', function() {
 gulp.task('watch', function() {
     //gulp.watch(SRC_SASS + '/*', ['styles']);
     //gulp.watch(SRC_IMG + '/*', ['images']);
-    gulp.watch(SRC_PARTIALS + '/*', ['partials']);
+    gulp.watch(SRC_PARTIALS + '/**/*.html', ['partials']);
 });
 
 // Javscript linting
@@ -115,10 +124,13 @@ gulp.task('browserSync', function() {
 // Build task
 gulp.task('build', function(cb) {
     runSequence(
+		'clean',
+
         // run these in parallel
         [
             'lint',
             'scripts',
+			'partials'
         ],
         function(err) {
             if (err) {
@@ -130,4 +142,4 @@ gulp.task('build', function(cb) {
 });
 
 // Default gulp task
-gulp.task('default', ['build', 'watch', 'partials', 'browserSync']);
+gulp.task('default', ['build', 'watch', 'browserSync']);
