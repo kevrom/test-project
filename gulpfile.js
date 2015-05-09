@@ -44,12 +44,8 @@ var BROWSERSYNC = {
 
 // Clean up build directory
 gulp.task('clean', function(cb) {
-    del(BUILD_DIR, {
-        force: true
-    }, function(err) {
-        if (err) {
-            cb(err);
-        }
+    del(BUILD_DIR, { force: true }, function(err) {
+        if (err) { cb(err); }
         cb();
     });
 });
