@@ -1,7 +1,7 @@
 'use strict';
 
 // Load component modules
-import './components/user';
+//import './components/user';
 
 import angular from 'angular';
 
@@ -19,7 +19,7 @@ m.config(['$stateProvider', '$locationProvider', '$urlRouterProvider', ($statePr
             url: '/',
             views: {
                 'main@': {
-                    templateUrl: 'client/src/components/home/home.html'
+                    templateUrl: 'components/home/home.html'
                 }
             }
         });
