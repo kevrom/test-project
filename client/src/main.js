@@ -6,7 +6,8 @@
 import angular from 'angular';
 
 const m = angular.module('myProject', [
-    'ui.router' // I'm serving this from a CDN
+    'ui.router', // I'm serving this from a CDN
+    'mgcrea.ngStrap'
 ]);
 
 m.config(['$stateProvider', '$locationProvider', '$urlRouterProvider', ($stateProvider, $locationProvider, $urlRouterProvider) => {
@@ -20,6 +21,22 @@ m.config(['$stateProvider', '$locationProvider', '$urlRouterProvider', ($statePr
             views: {
                 'main@': {
                     templateUrl: 'components/home/home.html'
+                }
+            }
+        })
+        .state('about', {
+            url: '/about',
+            views: {
+                'main@': {
+                    templateUrl: 'components/about/about.html'
+                }
+            }
+        })
+        .state('contact', {
+            url: '/contact',
+            views: {
+                'main@': {
+                    templateUrl: 'components/contact/contact.html'
                 }
             }
         });
