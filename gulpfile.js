@@ -21,6 +21,7 @@ var SRC_DIR = './client/src';
 var BUILD_DIR = './dist';
 
 var SRC_JS = SRC_DIR;
+var SRC_CSS = SRC_DIR;
 var SRC_SASS = path.join(SRC_DIR, 'sass');
 var SRC_LESS = path.join(SRC_DIR, 'less');
 var SRC_IMG = path.join(SRC_DIR, 'img');
@@ -59,10 +60,19 @@ gulp.task('partials', function() {
         })));
 });
 
+gulp.task('css', function() {
+    return gulp.src(SRC_PARTIALS + '/**/*.css')
+    .pipe(gulp.dest(BUILD_DIR))
+    .pipe(gulpif(!production, browserSync.reload({
+        stream: true
+    })));
+});
+
 gulp.task('watch', function() {
     //gulp.watch(SRC_SASS + '/*', ['styles']);
     //gulp.watch(SRC_IMG + '/*', ['images']);
     gulp.watch(SRC_PARTIALS + '/**/*.html', ['partials']);
+    gulp.watch(SRC_PARTIALS + '/**/*.css', ['css']);
 });
 
 // Javscript linting
@@ -130,7 +140,8 @@ gulp.task('build', function(cb) {
         [
             'lint',
             'scripts',
-            'partials'
+            'partials',
+            'css'
         ],
         function(err) {
             if (err) {
