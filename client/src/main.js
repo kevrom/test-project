@@ -1,13 +1,17 @@
 'use strict';
 
 // Load component modules
-//import './components/user';
+
+import './components/home';
+import './components/about';
+import './components/contact';
 
 import angular from 'angular';
 
-const m = angular.module('myProject', [
+const m = angular.module('testProject', [
     'ui.router', // I'm serving this from a CDN
-    'mgcrea.ngStrap'
+    'mgcrea.ngStrap',
+    'testProject.controller'
 ]);
 
 m.config(['$stateProvider', '$locationProvider', '$urlRouterProvider', ($stateProvider, $locationProvider, $urlRouterProvider) => {

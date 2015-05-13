@@ -51,6 +51,14 @@ gulp.task('clean', function(cb) {
     });
 });
 
+//move js
+gulp.task('js', function(){
+    return gulp.src(SRC_JS + '**/*.js')
+    .pipe(gulp.dest(BUILD_DIR))
+    .pipe(gulpif(!production, browserSync.reload({
+        stream: true
+    })));
+});
 // Move partials
 gulp.task('partials', function() {
     return gulp.src(SRC_PARTIALS + '/**/*.html')
@@ -61,7 +69,7 @@ gulp.task('partials', function() {
 });
 
 gulp.task('css', function() {
-    return gulp.src(SRC_PARTIALS + '/**/*.css')
+    return gulp.src(SRC_CSS + '/**/*.css')
     .pipe(gulp.dest(BUILD_DIR))
     .pipe(gulpif(!production, browserSync.reload({
         stream: true
@@ -72,7 +80,8 @@ gulp.task('watch', function() {
     //gulp.watch(SRC_SASS + '/*', ['styles']);
     //gulp.watch(SRC_IMG + '/*', ['images']);
     gulp.watch(SRC_PARTIALS + '/**/*.html', ['partials']);
-    gulp.watch(SRC_PARTIALS + '/**/*.css', ['css']);
+    gulp.watch(SRC_CSS + '/**/*.css', ['css']);
+    gulp.watch(SRC_JS + '/**/*/js', ['js']);
 });
 
 // Javscript linting
@@ -141,7 +150,8 @@ gulp.task('build', function(cb) {
             'lint',
             'scripts',
             'partials',
-            'css'
+            'css',
+            'js'
         ],
         function(err) {
             if (err) {
