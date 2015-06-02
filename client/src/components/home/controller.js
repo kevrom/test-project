@@ -7,9 +7,9 @@
 
 import angular from 'angular';
 
-const m = angular.module('testProject.controller', []);
+const m = angular.module('demoProject.home.controller', []);
 
 m.controller('HomeCtrl', ['$scope', function($scope) {
-        $scope.controller1 = 'This is controller content!';
+        $scope.controller1 = 'This text is from a controller!';
     }
 ]);

@@ -5,13 +5,16 @@
 import './components/home';
 import './components/about';
 import './components/contact';
+import './components/table';
+import './shared/service';
 
 import angular from 'angular';
 
-const m = angular.module('testProject', [
+const m = angular.module('demoProject', [
     'ui.router', // I'm serving this from a CDN
     'mgcrea.ngStrap',
-    'testProject.controller'
+    //'demoProject.table',
+    'firebase'
 ]);
 
 m.config(['$stateProvider', '$locationProvider', '$urlRouterProvider', ($stateProvider, $locationProvider, $urlRouterProvider) => {
@@ -41,6 +44,23 @@ m.config(['$stateProvider', '$locationProvider', '$urlRouterProvider', ($statePr
             views: {
                 'main@': {
                     templateUrl: 'components/contact/contact.html'
+                }
+            }
+        })
+        .state('table', {
+            url: '/table',
+            controller: 'TableCtrl',
+            views: {
+                'main@': {
+                    templateUrl: 'components/table/table.html'
+                }
+            }
+        })
+        .state('modal', {
+            url: '/modal',
+            views: {
+                'main@': {
+                    templateUrl: 'components/modal/modal.html'
                 }
             }
         });

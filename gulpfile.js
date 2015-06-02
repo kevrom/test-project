@@ -15,6 +15,7 @@ var del = require('del');
 var babelify = require('babelify');
 var jshint = require('gulp-jshint');
 var runSequence = require('run-sequence');
+var Firebase = require('firebase');
 
 // Gulp paths and options
 var SRC_DIR = './client/src';
@@ -27,6 +28,8 @@ var SRC_LESS = path.join(SRC_DIR, 'less');
 var SRC_IMG = path.join(SRC_DIR, 'img');
 var SRC_FONTS = path.join(SRC_DIR, 'fonts');
 var SRC_PARTIALS = SRC_DIR;
+var SRC_DATA = SRC_DIR;
+var SRC_SHARED = SRC_DIR;
 
 var BROWSERIFY_BUNDLES = [{
     debug: true,
@@ -44,55 +47,75 @@ var BROWSERSYNC = {
 };
 
 // Clean up build directory
-gulp.task('clean', function(cb) {
-    del(BUILD_DIR, { force: true }, function(err) {
+gulp.task('clean', function (cb) {
+    del(BUILD_DIR, { force: true }, function (err) {
         if (err) { cb(err); }
         cb();
     });
 });
 
 //move js
-gulp.task('js', function(){
-    return gulp.src(SRC_JS + '**/*.js')
-    .pipe(gulp.dest(BUILD_DIR))
-    .pipe(gulpif(!production, browserSync.reload({
+gulp.task('js', function () {
+    return gulp.src(SRC_JS + '/**/*.js')
+        .pipe(gulp.dest(BUILD_DIR))
+        .pipe(gulpif(!production, browserSync.reload({
         stream: true
     })));
 });
 // Move partials
-gulp.task('partials', function() {
+gulp.task('partials', function () {
     return gulp.src(SRC_PARTIALS + '/**/*.html')
         .pipe(gulp.dest(BUILD_DIR))
         .pipe(gulpif(!production, browserSync.reload({
-            stream: true
-        })));
+        stream: true
+    })));
 });
 
-gulp.task('css', function() {
-    return gulp.src(SRC_CSS + '/**/*.css')
+//move shared folder
+
+gulp.task('shared', function (){
+    return gulp.src(SRC_DATA + '/**/*.js')
     .pipe(gulp.dest(BUILD_DIR))
     .pipe(gulpif(!production, browserSync.reload({
         stream: true
     })));
 });
 
-gulp.task('watch', function() {
+//Move data
+gulp.task('data', function () {
+    return gulp.src(SRC_DATA + '/**/*.json')
+        .pipe(gulp.dest(BUILD_DIR))
+        .pipe(gulpif(!production, browserSync.reload({
+        stream: true
+    })));
+});
+gulp.task('css', function () {
+    return gulp.src(SRC_CSS + '/**/*.css')
+        .pipe(gulp.dest(BUILD_DIR))
+        .pipe(gulpif(!production, browserSync.reload({
+        stream: true
+    })));
+});
+
+gulp.task('watch', function () {
     //gulp.watch(SRC_SASS + '/*', ['styles']);
     //gulp.watch(SRC_IMG + '/*', ['images']);
     gulp.watch(SRC_PARTIALS + '/**/*.html', ['partials']);
     gulp.watch(SRC_CSS + '/**/*.css', ['css']);
     gulp.watch(SRC_JS + '/**/*/js', ['js']);
+    gulp.watch(SRC_DATA + '/**/*/.json', ['data']);
+    gulp.watch(SRC_SHARED + '/**/*/.js', ['shared'])
 });
 
 // Javscript linting
-gulp.task('lint', function() {
+gulp.task('lint', function () {
     return gulp.src(SRC_JS)
         .pipe(jshint())
         .pipe(jshint.reporter('jshint-stylish'));
 });
 
 // Javascript assets pipeline
-gulp.task('scripts', ['lint'], function(cb) {
+gulp.task('scripts', ['lint'], function (cb) {
     var queue = BROWSERIFY_BUNDLES.length;
 
     function browserifyIt(config) {
@@ -116,14 +139,14 @@ gulp.task('scripts', ['lint'], function(cb) {
             console.log('Building scripts...');
             return b
                 .bundle()
-                .on('error', function(err) {
-                    console.log(err);
-                })
+                .on('error', function (err) {
+                console.log(err);
+            })
                 .pipe(source(config.outputName))
                 .pipe(gulp.dest(config.dest))
                 .pipe(browserSync.reload({
-                    stream: true
-                }))
+                stream: true
+            }))
                 .on('end', done);
         }
 
@@ -136,12 +159,12 @@ gulp.task('scripts', ['lint'], function(cb) {
 });
 
 // Browser Sync
-gulp.task('browserSync', function() {
+gulp.task('browserSync', function () {
     browserSync.init(BROWSERSYNC);
 });
 
 // Build task
-gulp.task('build', function(cb) {
+gulp.task('build', function (cb) {
     runSequence(
         'clean',
 
@@ -151,15 +174,17 @@ gulp.task('build', function(cb) {
             'scripts',
             'partials',
             'css',
-            'js'
+            'js',
+            'data',
+            'shared'
         ],
-        function(err) {
+        function (err) {
             if (err) {
                 cb(err);
             }
             cb();
         }
-    );
+        );
 });
 
 // Default gulp task
